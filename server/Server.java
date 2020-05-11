@@ -33,26 +33,25 @@ import javax.net.ssl.SSLContext;
 
 public class Server {
 
-    /*
-    * Server Code written by Matthias Braun (https://gitlab.com/bullbytes/simple_socket_based_server/-/blob/master/src/main/java/com/bullbytes/simpleserver/Start.java)
-    * Converted to Java 8 & Modified by Luma Development
-    */
+	/*
+	 * Server Code written by Matthias Braun (https://gitlab.com/bullbytes/simple_socket_based_server/-/blob/master/src/main/java/com/bullbytes/simpleserver/Start.java)
+	 * Converted to Java 8 & Modified by Luma Development
+	 */
 	
-    private static final Charset ENCODING = StandardCharsets.UTF_8;
+	private static final Charset ENCODING = StandardCharsets.UTF_8;
     private static final String NO_TLS_ARG = "--use-tls=no";
     
-    //The password that is checked when an token request is sent
+    //Password that is checked when a token request is sent.
     private static final String password = "server_password";
-
     private static String token = "";
     private static Long token_expire = 0L;
     
-    //SQL Info
+    //SQL
     public static String sql_ip = "host";
 	public static String sql_port = "port";
 	public static String sql_database = "database";
 	public static String sql_user = "user";
-	public static String sql_password = "pswd";
+	public static String sql_password = "password";
 	
 	public static Connection sql_connection;
 	
@@ -125,66 +124,86 @@ public class Server {
                     
                     if(requestedResource.split("_")[0].equals("/auth")) {
                     	
-                    	if(!Server.token.equals("")) {
-                    		if(!tokenValid(Server.token)) {
-                    			expireToken();
-                    		}
-                    	}
-                    	
-                    	if(Server.token.equals("")) {
-                    	
-                    		String s_psswd = new String(Base64.getDecoder().decode(requestedResource.split("_")[1]));
-                        	
-                        	if(s_psswd.equals(Server.password)) {
-                        		String n_token = UUID.randomUUID().toString();
-                        		Server.token = n_token;
-                        		
-                        		Date date = new Date();
-                        		Server.token_expire = date.getTime() + 86400000;
-                        		
-                        		response = getTextResponse(n_token, StatusCode.SUCCESS);
-                        		
-                        		System.out.println("[TOKEN] Token provided to " + socket.getRemoteSocketAddress());
-                        	}else {
-                        		response = getTextResponse("InvalidPassword", StatusCode.SUCCESS);
+                    	if(requestedResource.split("_").length < 2) {
+                    		
+                    		response = getTextResponse("NotEnoughArgs", StatusCode.SUCCESS);
+                    		
+                    	}else {
+                    		
+                    		if(!Server.token.equals("")) {
+                        		if(!tokenValid(Server.token)) {
+                        			expireToken();
+                        		}
                         	}
                         	
-                    	}else {
-                    		response = getTextResponse("TokenExists", StatusCode.SUCCESS);
+                        	if(Server.token.equals("")) {
+                        	
+                        		String s_psswd = new String(Base64.getDecoder().decode(requestedResource.split("_")[1]));
+                            	
+                            	if(s_psswd.equals(Server.password)) {
+                            		String n_token = UUID.randomUUID().toString();
+                            		Server.token = n_token;
+                            		
+                            		Date date = new Date();
+                            		Server.token_expire = date.getTime() + 86400000;
+                            		
+                            		response = getTextResponse(n_token, StatusCode.SUCCESS);
+                            		
+                            		System.out.println("[TOKEN] Token provided to " + socket.getRemoteSocketAddress());
+                            	}else {
+                            		response = getTextResponse("InvalidPassword", StatusCode.SUCCESS);
+                            	}
+                            	
+                        	}else {
+                        		response = getTextResponse("TokenExists", StatusCode.SUCCESS);
+                        	}
+                        	
                     	}
                     	
                     } else if(requestedResource.split("_")[0].equals("/get")) { 
                     
-                    	String token = requestedResource.split("_")[1];
-                    	
-                    	if(tokenValid(token)) {
-                    		HashMap<Integer, Integer> button = checkButtons();
+                    	if(requestedResource.split("_").length < 2) {
                     		
-                    		if(button.values().size() > 0) {
-                    			
-                    			int[] res = button.values().stream().mapToInt(Integer::intValue).toArray();
-                    			response = getTextResponse("" + res[0], StatusCode.SUCCESS);
-                    			
-                    			int[] del = button.keySet().stream().mapToInt(Integer::intValue).toArray();
-                    			processButton(del[0]);
-                    		}else {
-                    			response = getTextResponse("NoButtons", StatusCode.SUCCESS);
-                    		}
+                    		response = getTextResponse("NotEnoughArgs", StatusCode.SUCCESS);
+                    		
                     	}else {
-                    		response = getTextResponse("InvalidToken", StatusCode.SUCCESS);
+                    		String token = requestedResource.split("_")[1];
+                        	
+                        	if(tokenValid(token)) {
+                        		HashMap<Integer, Integer> button = checkButtons();
+                        		
+                        		if(button.values().size() > 0) {
+                        			
+                        			int[] res = button.values().stream().mapToInt(Integer::intValue).toArray();
+                        			response = getTextResponse("" + res[0], StatusCode.SUCCESS);
+                        			
+                        			int[] del = button.keySet().stream().mapToInt(Integer::intValue).toArray();
+                        			processButton(del[0]);
+                        		}else {
+                        			response = getTextResponse("NoButtons", StatusCode.SUCCESS);
+                        		}
+                        	}else {
+                        		response = getTextResponse("InvalidToken", StatusCode.SUCCESS);
+                        	}
                     	}
                     	
                     } else if(requestedResource.split("_")[0].equals("/del")) { 
                     
-                    	String token = requestedResource.split("_")[1];
-                    	
-                    	if(tokenValid(token)) {
-                            
-                                expireToken();
-                    		response = getTextResponse("Success", StatusCode.SUCCESS);
+                    	if(requestedResource.split("_").length < 2) {
+                    		
+                    		response = getTextResponse("NotEnoughArgs", StatusCode.SUCCESS);
                     		
                     	}else {
-                    		response = getTextResponse("InvalidToken", StatusCode.SUCCESS);
+                    		String token = requestedResource.split("_")[1];
+                        	
+                        	if(tokenValid(token)) {
+                        		
+                        		expireToken();
+                        		response = getTextResponse("Success", StatusCode.SUCCESS);
+                        		
+                        	}else {
+                        		response = getTextResponse("InvalidToken", StatusCode.SUCCESS);
+                        	}
                     	}
                     	
                 	} else {
@@ -200,13 +219,11 @@ public class Server {
                     responseStream.flush();
                     
                 } catch (IOException e) {
-                    System.err.println("Exception while handling connection");
-                    e.printStackTrace();
+                    System.out.println("[ERROR] Connection failed/error");
                 }
             }
         } catch (Exception e) {
-            System.err.println("Could not create socket at " + address);
-            e.printStackTrace();
+        	System.out.println("[ERROR] Connection failed/error");
         }
     }
 
@@ -243,49 +260,59 @@ public class Server {
                 line = reader.readLine();
             }
         } catch (IOException e) {
-            System.err.println("Could not read all lines from request");
-            e.printStackTrace();
+            System.out.println("[ERROR] Could not read request header lines");
         }
         return headerLines;
     }
 
-    private static ServerSocket getSslSocket(InetSocketAddress address)
-            throws Exception {
+    private static ServerSocket getSslSocket(InetSocketAddress address) {
 
-        // Backlog is the maximum number of pending connections on the socket, 0 means an
-        // implementation-specific default is used
-        int backlog = 0;
+    	try {
+    		// Backlog is the maximum number of pending connections on the socket, 0 means an
+            // implementation-specific default is used
+            int backlog = 0;
+            
+            //Key Store Path
+            Path keyStorePath = Paths.get(new File("keystore.jks").toURI());
+
+            //Key Store Password
+            char[] keyStorePassword = "password".toCharArray();
+
+            // Bind the socket to the given port and address
+            ServerSocket serverSocket = getSslContext(keyStorePath, keyStorePassword)
+                    .getServerSocketFactory()
+                    .createServerSocket(address.getPort(), backlog, address.getAddress());
+
+            // We don't need the password anymore → Overwrite it
+            Arrays.fill(keyStorePassword, '0');
+
+            return serverSocket;
+    	} catch(Exception e) {
+    		System.out.println("[ERROR] SSL Socket Error");
+    		return null;
+    	}
         
-        //KeyStore path
-        Path keyStorePath = Paths.get(new File("keystore.jks").toURI());
-
-        //KeyStore password, defined when making the certificate
-        char[] keyStorePassword = "password".toCharArray();
-
-        // Bind the socket to the given port and address
-        ServerSocket serverSocket = getSslContext(keyStorePath, keyStorePassword)
-                .getServerSocketFactory()
-                .createServerSocket(address.getPort(), backlog, address.getAddress());
-
-        // We don't need the password anymore → Overwrite it
-        Arrays.fill(keyStorePassword, '0');
-
-        return serverSocket;
     }
 
-    private static SSLContext getSslContext(Path keyStorePath, char[] keyStorePassword)
-            throws Exception {
+    private static SSLContext getSslContext(Path keyStorePath, char[] keyStorePassword) {
 
-        KeyStore keyStore = KeyStore.getInstance("JKS");
-        keyStore.load(new FileInputStream(keyStorePath.toFile()), keyStorePassword);
+    	try {
+    		 KeyStore keyStore = KeyStore.getInstance("JKS");
+    	     keyStore.load(new FileInputStream(keyStorePath.toFile()), keyStorePassword);
 
-        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
-        keyManagerFactory.init(keyStore, keyStorePassword);
+    	     KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
+    	     keyManagerFactory.init(keyStore, keyStorePassword);
 
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        // Null means using default implementations for TrustManager and SecureRandom
-        sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
-        return sslContext;
+    	     SSLContext sslContext = SSLContext.getInstance("TLS");
+    	     // Null means using default implementations for TrustManager and SecureRandom
+    	     sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
+    	     return sslContext;
+    	} catch(Exception e) {
+    		System.out.println("[ERROR] SSL Context Error");
+    		return null;
+    	}
+    	
+       
     }
 
     private static byte[] getTextResponse(String text, StatusCode status) {
@@ -304,23 +331,23 @@ public class Server {
     }
     
     public static boolean tokenValid(String token_i) {
-        
-        if(Server.token.equals("")) {
-            return false;
-        }
-        
-        if(token_i.equals(Server.token)) {
-            Date date = new Date();
-            
-            if(Server.token_expire <= date.getTime()) {
-                expireToken();
-                return false;
-            }else {
-                return true;
-            }
-        } else {
-            return false;   
-        }
+    	
+    	if(Server.token.equals("")) {
+    		return false;
+    	}
+    	
+    	if(token_i.equals(Server.token)) {
+    		Date date = new Date();
+    		
+    		if(Server.token_expire <= date.getTime()) {
+    			expireToken();
+    			return false;
+    		}else {
+    			return true;
+    		}
+    	} else {
+    		return false;	
+    	}
     }
     
     public static void expireToken() {
@@ -340,7 +367,7 @@ public class Server {
 				return Server.sql_connection;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("[ERROR] SQL Database connection error");
 			return null;
 		}
 	}
@@ -364,7 +391,7 @@ public class Server {
 			return true;
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("[ERROR] SQL Database connection error");
 			return false;
 		}
 	}
@@ -390,7 +417,7 @@ public class Server {
 			
 			return button_map;
 		} catch(SQLException e) {
-			e.printStackTrace();
+			System.out.println("[ERROR] SQL Database connection error");
 			con.close();
 			return null;
 		}
@@ -407,7 +434,7 @@ public class Server {
 			con.close();
 			return;
 		}catch(SQLException e) {
-			e.printStackTrace();
+			System.out.println("[ERROR] SQL Database connection error");
 			con.close();
 			return;
 		}
