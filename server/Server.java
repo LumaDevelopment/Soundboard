@@ -179,7 +179,8 @@ public class Server {
                     	String token = requestedResource.split("_")[1];
                     	
                     	if(tokenValid(token)) {
-                    		
+                            
+                            expireToken();
                     		response = getTextResponse("Success", StatusCode.SUCCESS);
                     		
                     	}else {
