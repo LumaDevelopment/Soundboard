@@ -304,20 +304,23 @@ public class Server {
     }
     
     public static boolean tokenValid(String token_i) {
-    	
-    	if(token_i.equals(Server.token)) {
-    		return true;
-    	} else {
-    		
-    		Date date = new Date();
-    		
-    		if(Server.token_expire >= date.getTime()) {
-    			expireToken();
-    			return false;
-    		}else {
-    			return true;
-    		}
-    	}
+        
+        if(Server.token.equals("")) {
+            return false;
+        }
+        
+        if(token_i.equals(Server.token)) {
+            Date date = new Date();
+            
+            if(Server.token_expire <= date.getTime()) {
+                expireToken();
+                return false;
+            }else {
+                return true;
+            }
+        } else {
+            return false;   
+        }
     }
     
     public static void expireToken() {
