@@ -167,6 +167,13 @@ public class Server {
                     		response = getTextResponse("NotEnoughArgs", StatusCode.SUCCESS);
                     		
                     	}else {
+                    		
+                    		if(!Server.token.equals("")) {
+                        		if(!tokenValid(Server.token)) {
+                        			expireToken();
+                        		}
+                        	}
+                    		
                     		String token = requestedResource.split("_")[1];
                         	
                         	if(tokenValid(token)) {
@@ -194,6 +201,13 @@ public class Server {
                     		response = getTextResponse("NotEnoughArgs", StatusCode.SUCCESS);
                     		
                     	}else {
+                    		
+                    		if(!Server.token.equals("")) {
+                        		if(!tokenValid(Server.token)) {
+                        			expireToken();
+                        		}
+                        	}
+                    		
                     		String token = requestedResource.split("_")[1];
                         	
                         	if(tokenValid(token)) {
