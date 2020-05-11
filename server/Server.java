@@ -33,12 +33,12 @@ import javax.net.ssl.SSLContext;
 
 public class Server {
 
-	/*
-	 * Server Code written by Matthias Braun (https://gitlab.com/bullbytes/simple_socket_based_server/-/blob/master/src/main/java/com/bullbytes/simpleserver/Start.java)
-	 * Converted to Java 8 & Modified by Luma Development
-	 */
+    /*
+    * Server Code written by Matthias Braun (https://gitlab.com/bullbytes/simple_socket_based_server/-/blob/master/src/main/java/com/bullbytes/simpleserver/Start.java)
+    * Converted to Java 8 & Modified by Luma Development
+    */
 	
-	private static final Charset ENCODING = StandardCharsets.UTF_8;
+    private static final Charset ENCODING = StandardCharsets.UTF_8;
     private static final String NO_TLS_ARG = "--use-tls=no";
     
     //The password that is checked when an token request is sent
