@@ -180,7 +180,7 @@ public class Server {
                     	
                     	if(tokenValid(token)) {
                             
-                            expireToken();
+                                expireToken();
                     		response = getTextResponse("Success", StatusCode.SUCCESS);
                     		
                     	}else {
