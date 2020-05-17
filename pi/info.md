@@ -1,10 +1,6 @@
-This part of the program will be the software on the Raspberry Pi.
+The script on the Raspberry Pi listens for GPIO input and makes SQL requests.
 Language: Python
 
-Objectives:
-- Send secure POST request to Server with the GPIO Pin number, converted to sequential format.
-- Send Base64-encoded key with POST request to be decrypted on the server's end. This valildates POST input as from trusted sources.
-
-Alternative
-
-- Have Pi interact directly with the SQL database the Server uses to store and retrieve unprocessed button presses.
+Functionality:
+- The program uses a while loop to check for button presses (with runs being spaced 0.2s apart) and calls insertbutton() if a button is pressed.
+- If a button is pressed, the program inputs the button's GPIO number into a SQL table
