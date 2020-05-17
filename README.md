@@ -1,5 +1,6 @@
 # Soundboard
 [![Program in Action](https://files.lumadevelopment.net/soundboard/button_press.gif)](https://files.lumadevelopment.net/soundboard/button_press.mp4)
+
 *Client is on the top left, Pi program is on the top right, Server is on the bottom. This video shows a button press, seen with "Button 1 Pressed" on the Pi program. When the Client shows "[PRESS] Button 2 Pressed", this info was retrieved after a connection to the Server. These connections are shown in the Server logs, starting with "[CONN]".*
 
 ## Objective
