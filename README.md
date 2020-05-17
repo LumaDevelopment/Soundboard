@@ -14,6 +14,12 @@ Client | Java
 
 For more info about each of the components, see "info.md" in each of the component directories.
 
+## Hardware
+- [Raspberry Pi 3 Model B](https://www.microcenter.com/product/460968/3_Model_B?src=raspberrypi)
+- [Breadboard](https://www.amzn.com/B00LSG5BJK)
+- [Cables](https://www.amzn.com/B01LZF1ZSZ)
+- [Buttons](https://www.amzn.com/B01GN79QF8)
+
 ## Images
 ![Image of Board 1](https://files.lumadevelopment.net/soundboard/board_1.jpg)
 ![Image of Board 2](https://files.lumadevelopment.net/soundboard/board_2.jpg)
