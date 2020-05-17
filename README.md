@@ -19,5 +19,5 @@ For more info about each of the components, see "info.md" in each of the compone
 ![Image of Board 3](https://files.lumadevelopment.net/soundboard/board_3.jpg)
 
 ## Other Contributors
-- Matthias Braun - Base server code for the Server component.
+- Matthias Braun - Base server code for the Server component. Code used under the GNU GPL v3
 - Prasanta Biswas - trustAllHosts() method in the Client component.
